@@ -1,0 +1,94 @@
+{
+    "root": {
+        "data": {
+            "id": "cj6d33trbd40",
+            "created": 1649573734059,
+            "text": "GetX"
+        },
+        "children": [
+            {
+                "data": {
+                    "id": "cj6d36pgl3s0",
+                    "created": 1649573740329,
+                    "text": "路由管理"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "cj6d39aakag0",
+                    "created": 1649573745943,
+                    "text": "状态管理"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "cj6d3bh9r1c0",
+                    "created": 1649573750718,
+                    "text": "依赖注入"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "cj6d3f033mw0",
+                    "created": 1649573758386,
+                    "text": "权限控制"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "cj6d3gprxx40",
+                    "created": 1649573762116,
+                    "text": "转场动画"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "cj6d3lify5k0",
+                    "created": 1649573772557,
+                    "text": "数据拉取"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "cj6d3n4ukf40",
+                    "created": 1649573776088,
+                    "text": "对话框组件"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "cj6d3p1h07s0",
+                    "created": 1649573780238,
+                    "text": "提示框组件"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "cj6d3r0osdc0",
+                    "created": 1649573784544,
+                    "text": "多语言"
+                },
+                "children": []
+            },
+            {
+                "data": {
+                    "id": "cj6d3sbqz4o0",
+                    "created": 1649573787390,
+                    "text": "全局样式"
+                },
+                "children": []
+            }
+        ]
+    },
+    "template": "default",
+    "theme": "fresh-blue",
+    "version": "1.4.43"
+}
