@@ -8,17 +8,18 @@ import 'package:get/get.dart';
 /// * 使用了 GetX 的路由跳转功能。
 void main() {
   // 注意：本例需要使用路由跳转功能，所以这里需要将 MaterialApp 改为 GetMaterialApp
-  runApp(GetMaterialApp(home: Home()));
+  runApp(const GetMaterialApp(home: Home()));
 }
 
 class Home extends StatelessWidget {
-  Home({Key? key}) : super(key: key);
-
-  // 使用 Get.put() 注入你的实例，使其对所有子路由可用。
-  final controller = Get.put(CounterController());
+  const Home({Key? key}) : super(key: key);
 
   @override
   Widget build(context) {
+    // 使用 Get.put() 注入你的实例，使其对所有子路由可用。
+    // NOTE: 实例化 controller 不应该放在 build 外面
+    final controller = Get.put(CounterController());
+
     return Scaffold(
       appBar: AppBar(title: const Text('counter-v2')),
       body: Center(
