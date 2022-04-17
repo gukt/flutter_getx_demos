@@ -1,37 +1,39 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+/// StateMixin demo
 void main() {
-  runApp(const MaterialApp(home:Home()));
+  runApp(GetMaterialApp(
+    initialBinding: HomeBinding(),
+    home: const Home(),
+  ));
 }
 
-class Home extends GetView<CounterController> {
+class Home extends GetView<NewsController> {
   const Home({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GetBuilder<CounterController>(
-        // GetBuilder 是继承自 StatefulWidget 的, 可以在 GetBuilder 中调用 StatefulWidget 的所有方法, 比如我们最常见的 : initState, dispose
-        // 比这更好的方式是将 init 和 dispose 的逻辑写在 controller 的 onInit, onClose 方法里, 这样方便做到界面和逻辑的分离
-        initState: (state) {
-          debugPrint('GetBuilder: initState');
-        },
-        dispose: (state) {
-          debugPrint('GetBuilder: dispose');
-        },
+      appBar: AppBar(title: const Text('StateMixin demo')),
+      body: GetBuilder<NewsController>(
         builder: (controller) {
-          return Column(
-            children: [
-              Text('${controller.count}'),
-              ElevatedButton(
-                onPressed: () {
-                  controller.count++;
-                  controller.update();
+          return Center(
+            child: controller.obx(
+              (data) => ListView.builder(
+                itemCount: data!.length,
+                itemBuilder: (context, index) {
+                  return Text(data[index].title);
                 },
-                child: const Text('Add'),
               ),
-            ],
+              onEmpty: const Text('No data'),
+              // 转菊花
+              onLoading: const Center(child: CircularProgressIndicator()),
+              // 显示错误信息
+              onError: (err) => Text('Failed to load data: $err'),
+            ),
           );
         },
       ),
@@ -39,47 +41,51 @@ class Home extends GetView<CounterController> {
   }
 }
 
-class CounterController extends GetxController {
-  var count = 0.obs;
-  var b = 0.obs;
-  var c = 0.obs;
-
+class NewsController extends GetxController with StateMixin<List<NewsEntity>> {
   @override
-  void onInit() {
-    super.onInit();
-
-    ever(count, (_) {
-      debugPrint("[ever worker] count = $_");
+  void onReady() {
+    Future.delayed(3.seconds).then((value) {
+      List<NewsEntity> data = [];
+      for (int i = 0; i < 10; i++) {
+        data.add(NewsEntity.fromMap({'id': i, 'title': 'news-$i'}));
+      }
+      change(data, status: RxStatus.success());
+    }).onError((error, stackTrace) {
+      change(null, status: RxStatus.error('Failed to load news data'));
     });
-
-    interval(count, (_) {
-      debugPrint("[interval worker] count = $_");
-    });
-
-    debounce(count, (_) {
-      debugPrint("[debounce worker] count = $_");
-    });
-
-    everAll([count, b], (_) {
-      debugPrint("[a, b] has been changed: $_");
-    });
-
-    // 在满足 condition 的情况下只执行一次，并在此之后取消对 listener 流的订阅。
-    // condition 定义了何时调用 callback，可以是 bool 或 bool 函数。
-    once(c, (_) {
-      debugPrint("c has been changed: $_");
-    });
-
-    // // 监听 count 变量， 当 count 每次变化时都调用
-    // ever(count, (_) => debugPrint("$_ has been changed"));
-    // // 定义一个 worker 变量，用于在 callback 内部调用 dispose，以释放这个 worker
-    // Worker? worker;
-    // worker = debounce(count, (_) {
-    //   debugPrint("$_ has been changed");
-    //   worker?.dispose();
-    // });
-    // debugPrint('CounterController: onInit');
-
-    // everAll([count, count], (_) {});
+    super.onReady();
   }
+}
+
+class HomeBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.put(NewsController());
+  }
+}
+
+class NewsEntity {
+  const NewsEntity(this.id, this.title);
+
+  final int id;
+  final String title;
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'title': title,
+    };
+  }
+
+  factory NewsEntity.fromMap(Map<String, dynamic> map) {
+    return NewsEntity(
+      map['id']?.toInt() ?? 0,
+      map['title'] ?? '',
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory NewsEntity.fromJson(String source) =>
+      NewsEntity.fromMap(json.decode(source));
 }
